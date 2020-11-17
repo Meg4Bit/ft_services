@@ -4,11 +4,12 @@ LABEL maintainer="ametapod"
 
 RUN apk update
 RUN apk add nginx php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl php7-mbstring php7-json supervisor
+RUN apk add mysql-client
 
 RUN mkdir /run/nginx
 WORKDIR /var/www
 
-COPY srcs/start.sh /var/
+COPY srcs/wordpress.sql /var/
 COPY srcs/nginx.conf /etc/nginx/conf.d/default.conf
 COPY srcs/wordpress-5.5.3.tar.gz .
 COPY srcs/supervisor.conf /etc/supervisord.conf
@@ -19,6 +20,7 @@ RUN adduser -D -g 'www' www
 RUN chown -R www:www /var/www
 RUN chown -R www:www /var/lib/nginx
 RUN chmod 777 -R wordpress
+COPY srcs/start.sh /var/
 
 # Настраиваем команду, которая должна быть запущена в контейнере во время его выполнения
 ENTRYPOINT sh /var/start.sh

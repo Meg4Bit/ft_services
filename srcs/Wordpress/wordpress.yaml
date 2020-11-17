@@ -1,9 +1,15 @@
 apiVersion: v1
-kind: Secret
+kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pass
-stringData:
-  password: password
+  name: wordpress-pvc
+  labels:
+    app: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,6 +32,13 @@ spec:
       - name: wordpress
         image: wordpress
         imagePullPolicy: Never
+        volumeMounts:
+        - name: wp-persistent-storage
+          mountPath: /tmp/
+      volumes:
+      - name: wp-persistent-storage
+        persistentVolumeClaim:
+          claimName: wordpress-pvc
 ---
 apiVersion: v1
 kind: Service

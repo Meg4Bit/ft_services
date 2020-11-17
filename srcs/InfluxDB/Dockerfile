@@ -1,0 +1,13 @@
+FROM alpine:latest
+LABEL maintainer="ametapod"
+# Устанавливаем зависимости
+
+RUN apk update
+RUN apk add influxdb
+
+COPY srcs/start.sh /var/
+
+# Настраиваем команду, которая должна быть запущена в контейнере во время его выполнения
+ENTRYPOINT sh /var/start.sh
+
+EXPOSE 8086
